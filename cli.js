@@ -14,6 +14,7 @@ const cli = meow(
       sandboxList
       uploadFile
       beginPrescan
+      zip
 
     Authentication
       To use this tool API Credentials must provided by environment variables or options
@@ -37,6 +38,10 @@ const cli = meow(
       --sandboxId   ID of the sandbox that will be scanned
       --autoScan    Enabled auto-scan on the pre-scan.
 
+    zip Options
+      --source Folder that will be recursively compress
+      --destination Destination file for the zip
+      --ignore Glob pattern to ignore files
 
     Examples
       $ veracode list

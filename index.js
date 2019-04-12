@@ -1,7 +1,7 @@
 const path = require('path');
 const VeracodeClient = require('@jupiterone/veracode-client');
 
-const actions = ['list', 'sandboxList', 'uploadFile', 'beginPrescan'];
+const actions = ['list', 'sandboxList', 'uploadFile', 'beginPrescan', 'zip'];
 
 const appOutput = app => `${app._attributes.app_name}:
   id: ${app._attributes.app_id}
@@ -41,8 +41,20 @@ module.exports = async (action, apiId, apiKey, options) => {
         throw new Error(`appId is not defined.`);
       }
       data = await veraClient.beginPrescan(options);
-      console.log(data);
       return `New scan: ${data._attributes.build._attributes.analysis_unit._attributes.build_id}`;
+    case 'zip':
+      if (!options.source) {
+        throw new Error(`source is not defined.`);
+      }
+      if (!options.destination) {
+        throw new Error(`destination is not defined.`);
+      }
+      await veraClient.createZipArchive(
+        options.source,
+        options.destination,
+        options.ignore instanceof String ? [options.ignore] : options.ignore
+      );
+      return `Zip generated: ${options.destination}`;
     default:
       throw new Error(`The action '${action || ''}' is not valid.`);
   }
