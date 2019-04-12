@@ -35,13 +35,28 @@ module.exports = async (action, apiId, apiKey, options) => {
         ...options,
         file: path.resolve(process.cwd(), options.file)
       });
-      return `New file uploaded: ${data._attributes.file._attributes.file_id}`;
+      if (data && data._attributes && data._attributes.file && data._attributes.file._attributes) {
+        return `New file uploaded: ${data._attributes.file._attributes.file_id}`;
+      }
+      return 'New file uploaded';
     case 'beginPrescan':
       if (!options.appId) {
         throw new Error(`appId is not defined.`);
       }
       data = await veraClient.beginPrescan(options);
-      return `New scan: ${data._attributes.build._attributes.analysis_unit._attributes.build_id}`;
+      if (
+        data &&
+        data._attributes &&
+        data._attributes.build &&
+        data._attributes.build._attributes &&
+        data._attributes.build._attributes.analysis_unit &&
+        data._attributes.build._attributes.analysis_unit._attributes
+      ) {
+        return `New file created: ${
+          data._attributes.build._attributes.analysis_unit._attributes.build_id
+        }`;
+      }
+      return 'New scan created';
     case 'zip':
       if (!options.source) {
         throw new Error(`source is not defined.`);
